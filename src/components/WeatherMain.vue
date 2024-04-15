@@ -1,37 +1,18 @@
 <script setup>
 import { ref } from 'vue'
+import { fetchWeather } from '../services/weatherService.js'
+
+// Icons
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faMagnifyingGlass, faTemperatureThreeQuarters } from '@fortawesome/free-solid-svg-icons'
+import { faMagnifyingGlass, faTemperatureThreeQuarters, faWind, faDroplet} from '@fortawesome/free-solid-svg-icons'
+import { faSun } from '@fortawesome/free-regular-svg-icons'
 
-library.add(faMagnifyingGlass, faTemperatureThreeQuarters)
+library.add(faMagnifyingGlass, faTemperatureThreeQuarters, faWind, faDroplet, faSun)
 
 const weather = ref(null)
 const searchBar = ref('')
 const errorMsg = ref('')
-
-const fetchWeather = (city) => {
-  fetch(
-    `https://api.weatherapi.com/v1/forecast.json?key=550f2bc9f0aa46b5945111518231412&q=${city}&days=3`
-  )
-    .then((response) => {
-      return response.json()
-    })
-
-    .then((data) => {
-      const { name } = data.location
-      const { forecast } = data.current.condition
-      const { temp_c, humidity } = data.current
-      const { wind_kph } = data.current
-      const { feelslike_c } = data.current
-      const { avgtemp_c: avgtemp_c } = data.forecast.forecastday[1].day
-      const { avgtemp_c: avgtemp_c2 } = data.forecast.forecastday[2].day
-      const avgtempTomorrow = Math.floor(avgtemp_c)
-      const avgtempDay3 = Math.floor(avgtemp_c2)
-      const feelsLike = Math.floor(feelslike_c)
-      weather.value = { name, forecast, temp_c, humidity, wind_kph, avgtempTomorrow, avgtempDay3, feelsLike }
-    })
-}
 
 // Tomorrow
 const today = new Date()
@@ -44,12 +25,18 @@ const setDay3 = new Date(today)
 setDay3.setDate(today.getDate() + 2)
 const day3 = setDay3.toLocaleDateString('en-us', { weekday: 'long' })
 
-const search = () => {
+const search = async () => {
   if (!isNaN(searchBar.value) || searchBar.value.trim() === '') {
     errorMsg.value = 'Invalid location'
   } else {
     errorMsg.value = ''
-    fetchWeather(searchBar.value)
+    try {
+      const data = await fetchWeather(searchBar.value)
+      weather.value = data
+    } catch (error) {
+      console.error(error)
+      errorMsg.value = 'Failed to fetch weather data'
+    }
     searchBar.value = ''
   }
 }
@@ -78,30 +65,49 @@ const search = () => {
       </div>
 
       <div id="conditions">
-        <p class="air-conditions">Air conditions</p>
+        <p class="card-title">Air conditions</p>
+
         <div id="conditions-grid">
+
         <div class="condition-item">
-        
-        <span class="feels-like">
-          <font-awesome-icon icon="temperature-three-quarters" />
+        <span class="condition-item__description">
+          <font-awesome-icon icon="temperature-three-quarters" :style="{ color: 'rgb(187, 109, 14)'}"/>
           <p>Feels like</p>
         </span>
-        <p class="feels-like__celcius">{{ weather.feelsLike }}°</p>
+        <p class="condition-item__condition">{{ weather.feelsLike }}°</p>
       </div>
-      <div class="condition-item">test</div>
-      <div class="condition-item">test</div>
-      <div class="condition-item">test</div>
+      <div class="condition-item">
+        <span class="condition-item__description">
+          <font-awesome-icon icon="wind" :style="{ color: 'rgb(102, 167, 197)'}"/>
+          <p>Wind speed</p>
+        </span>
+        <p class="condition-item__condition">{{ weather.wind_kph }} km/h</p>
+      </div>
+      <div class="condition-item">
+        <span class="condition-item__description">
+          <font-awesome-icon icon="droplet" :style="{ color: 'rgb(14, 132, 187)'}"/>
+          <p>Chance of rain</p>
+        </span>
+        <p class="condition-item__condition">{{ weather.daily_chance_of_rain }} %</p>
+      </div>
+      <div class="condition-item">
+        <span class="condition-item__description">
+          <font-awesome-icon icon="fa-regular fa-sun" :style="{ color: 'rgb(255, 238, 0)'}" />
+          <p>UV Index</p>
+        </span>
+          <span class="uv">{{ weather.uv }}<p v-if="weather.uv >= 3" class="uv-warning">High</p></span>
+      </div>
       </div>
     </div>
       <div id="days-forecast">
-        <p class="day-forecast">2-day forecast</p>
+        <p class="card-title">2-day forecast</p>
         <span>
           <p>{{ tomorrow }}</p>
-          <p>{{ weather.avgtempTomorrow }}°</p>
+          <p class="forecast-temp">{{ weather.avgtempTomorrow }}°</p>
         </span>
         <span>
           <p>{{ day3 }}</p>
-          <p>{{ weather.avgtempDay3 }}°</p>
+          <p class="forecast-temp">{{ weather.avgtempDay3 }}°</p>
         </span>
       </div>
     </div>
