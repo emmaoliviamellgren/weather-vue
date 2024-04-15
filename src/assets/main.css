@@ -1,7 +1,6 @@
 @import './base.css';
 
 #app {
-  text-align: center;
   height: 100vh;
   display: flex;
   flex-direction: column;
@@ -23,6 +22,7 @@ footer {
 
 #search {
   position: relative;
+  text-align: center;
 }
 
 #search > input {
@@ -47,40 +47,89 @@ footer {
   display: flex;
   flex-direction: column;
   gap: 0.2em;
+  text-align: center;
 }
 
 .city-name {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   font-weight: 200;
 }
 
 .degrees {
-  font-size: 4.5rem;
+  font-size: 5.5rem;
   line-height: 1.2em;
   font-weight: 200;
 }
 
-#forecast-wrapper {
-  display: flex;
-  justify-content: center;
-  gap: 1.2em;
-  text-align: center;
-  margin-bottom:2em;
+#conditions {
+  background-color: var(--black-soft);
+  backdrop-filter: blur;
+  margin: auto;
+  border-radius: 0.6em;
+  padding: 0.7em 1.5em 1.5em 1.5em;
+  width: 375px;
+  margin-bottom: 1rem;
+  margin-top: 4rem;
 }
 
-#Days-forecast {
+#conditions-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 2rem 1rem;
+  margin-top: 1em;
+}
+
+.condition-item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.feels-like {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: 16px;
+  color: var(--white-mute);
+  font-weight: 200;
+  background-color: var(--black-mute);
+  width: fit-content;
+  margin-left: -0.2em;
+  padding: .2em .6em;
+  border-radius: 0.6em;
+}
+
+.feels-like__celcius {
+  font-size: 1.5em;
+  font-weight: 700;
+  margin-left: 5px;
+  margin-top: -5px;
+  color: var(--white-calm);
+}
+
+.air-conditions, .day-forecast {
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--white-mute);
+  padding: 7px 0 7px 0;
+}
+
+#days-forecast {
   background-color: var(--black-soft);
   backdrop-filter: blur;
   display: flex;
   flex-direction: column;
   margin: auto;
-  border-radius: 0.2em;
-  padding: 0.7em 2.2em;
+  border-radius: 0.6em;
+  padding: 0.7em 1.5em 1.5em 1.5em;
   gap: 0.5em;
   width: 375px;
 }
 
-#Days-forecast > span {
+#days-forecast > span {
   display: flex;
   justify-content: space-between;
   font-size: 16px;
@@ -92,4 +141,9 @@ a,
   color: hsla(160, 100%, 37%, 1);
   transition: 0.4s;
   padding: 3px;
+}
+
+footer > p, a {
+  text-align: center;
+  font-size: 13px;
 }
