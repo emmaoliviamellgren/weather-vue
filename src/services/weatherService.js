@@ -14,10 +14,9 @@ import thunder from '../assets/images/thunder.jpg';
 
 document.addEventListener('DOMContentLoaded', () => {
     getLocation((latlong) => {
-      // Handle the latitude and longitude string here
-      console.log(latlong);
+        console.log(latlong);
     });
-  });
+    });
 
 export const fetchWeather = (city, latlong) => {
 

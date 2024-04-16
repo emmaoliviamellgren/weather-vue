@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { fetchWeather } from '../services/weatherService.js'
 import { getLocation } from '../services/geolocationService.js'
+import LoadingIndicator from './LoadingIndicator.vue';
 
 // Icons
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -10,7 +11,6 @@ import { faMagnifyingGlass, faTemperatureThreeQuarters, faWind, faDroplet} from 
 import { faSun } from '@fortawesome/free-regular-svg-icons'
 
 library.add(faMagnifyingGlass, faTemperatureThreeQuarters, faWind, faDroplet, faSun)
-
 
 /*=============================================
 =            Managing date                    =
@@ -31,50 +31,72 @@ const day3 = setDay3.toLocaleDateString('en-us', { weekday: 'long' })
 
 const weather = ref(null)
 const searchBar = ref('')
-const errorMsg = ref('')
+
 const latlong = ref(null);
+const isGeolocation = ref(false);
+
+const loading = ref(false);
 
 onMounted(() => {
-  getLocation((latlongValue) => {
+  getLocation(async (latlongValue) => {
     latlong.value = latlongValue;
-    renderWeatherByGeolocation(latlongValue);
+    console.log(loading.value)
+
+    if (latlongValue) {
+      isGeolocation.value = true;
+    } else {
+      isGeolocation.value = false;
+    }
+    await renderWeatherByGeolocation(latlongValue);
   });
 });
 
 // Fetch weather after prompt, by users geolocation
 const renderWeatherByGeolocation = async (latlongValue) => {
+
+  //Setting states
+  loading.value = true;
+  isGeolocation.value = true;
+
   try {
-    const data = await fetchWeather(latlongValue)
-    weather.value = data
+    
+    const data = await fetchWeather(latlongValue);
+    weather.value = data;
+
   } catch (error) {
     console.log('Failed to fetch weather data based on geolocation' + error.message);
-    // errorMsg.value = 'Failed to fetch weather data';
   }
-  }
+  loading.value = false;
+  console.log(loading.value)
+}
 
 // Fetch weather from city input by user
 const renderWeatherOnSearch = async () => {
 
   // Error handling
   if (!isNaN(searchBar.value) || searchBar.value.trim() === '') {
-    return errorMsg.value = 'Invalid location'
-  } else {
-    errorMsg.value = ''
+    console.log('Invalid location')
+    return;
   }
+
+  //Setting states
+  loading.value = true;
 
   try {
     const data = await fetchWeather(searchBar.value)
     weather.value = data
   } catch (error) {
     console.log('Failed to fetch weather data based on chosen city' + error.message);
-    // errorMsg.value = 'Failed to fetch weather data'
   }
     searchBar.value = ''
+    loading.value = false;
 }
+
 </script>
 
 
 <template>
+  <LoadingIndicator v-if="loading.value" :loading="loading.value" />
   <div id="wrapper">
     <div id="search">
       <font-awesome-icon icon="magnifying-glass" class="icon" />
@@ -91,6 +113,7 @@ const renderWeatherOnSearch = async () => {
     <div v-if="weather">
 
       <div id="current-weather">
+        <div v-if="isGeolocation.value">hej</div>
         <h2 class="city-name">{{ weather.name }}</h2>
         <h1 class="degrees">{{ weather.temp_c }}°</h1>
         <h2 class="forecast">{{ weather.forecast }}</h2>

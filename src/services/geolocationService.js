@@ -1,3 +1,5 @@
+
+
 export function getLocation(renderPosition) {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
@@ -11,21 +13,19 @@ export function getLocation(renderPosition) {
 
 export function showError(error) {
 
-    console.log('Geolocation error!' + error.message)
-
-    // switch (error.code) {
-    //     case error.PERMISSION_DENIED:
-    //     daysForecast.innerHTML = 'User denied the request for Geolocation.'
-    //     break
-    //     case error.POSITION_UNAVAILABLE:
-    //     daysForecast.innerHTML = 'Location information is unavailable.'
-    //     break
-    //     case error.TIMEOUT:
-    //     daysForecast.innerHTML = 'The request to get user location timed out.'
-    //     break
-    //     case error.UNKNOWN_ERROR:
-    //     daysForecast.innerHTML = 'An unknown error occurred.'
-    //     break
-    // }
+    switch (error.code) {
+        case error.PERMISSION_DENIED:
+        console.log('User denied the request for Geolocation.')
+        break
+        case error.POSITION_UNAVAILABLE:
+        console.log('Location information is unavailable.')
+        break
+        case error.TIMEOUT:
+        console.log('The request to get user location timed out.')
+        break
+        case error.UNKNOWN_ERROR:
+        console.log('An unknown error occurred.')
+        break
+    }
 
 }
