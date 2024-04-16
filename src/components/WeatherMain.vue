@@ -14,6 +14,11 @@ const weather = ref(null)
 const searchBar = ref('')
 const errorMsg = ref('')
 
+
+/*=============================================
+=            Managing date                    =
+=============================================*/
+
 // Tomorrow
 const today = new Date()
 const setTomorrow = new Date(today)
@@ -24,6 +29,8 @@ const tomorrow = setTomorrow.toLocaleDateString('en-us', { weekday: 'long' })
 const setDay3 = new Date(today)
 setDay3.setDate(today.getDate() + 2)
 const day3 = setDay3.toLocaleDateString('en-us', { weekday: 'long' })
+
+/*=============================================*/
 
 const search = async () => {
   if (!isNaN(searchBar.value) || searchBar.value.trim() === '') {
