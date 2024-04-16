@@ -1,5 +1,8 @@
 const body = document.querySelector('body')
 
+// Geolocation
+import { getLocation } from './geolocationService';
+
 // Assets
 import clear from '../assets/images/clear.jpg';
 import clouds from '../assets/images/clouds.jpeg';
@@ -9,9 +12,17 @@ import snow from '../assets/images/snow.jpg';
 import sunny from '../assets/images/sunny.jpg';
 import thunder from '../assets/images/thunder.jpg';
 
-export const fetchWeather = (city) => {
-    return fetch(`https://api.weatherapi.com/v1/forecast.json?key=550f2bc9f0aa46b5945111518231412&q=${city}&days=3`
-    )
+document.addEventListener('DOMContentLoaded', () => {
+    getLocation((latlong) => {
+      // Handle the latitude and longitude string here
+      console.log(latlong);
+    });
+  });
+
+export const fetchWeather = (city, latlong) => {
+
+    return fetch("https://api.weatherapi.com/v1/forecast.json?key=550f2bc9f0aa46b5945111518231412&q=" + (city || latlong) + "&days=3")
+
     .then((response) => {
         return response.json()
     })

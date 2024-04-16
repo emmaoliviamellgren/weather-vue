@@ -1,6 +1,7 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { fetchWeather } from '../services/weatherService.js'
+import { getLocation } from '../services/geolocationService.js'
 
 // Icons
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -9,10 +10,6 @@ import { faMagnifyingGlass, faTemperatureThreeQuarters, faWind, faDroplet} from 
 import { faSun } from '@fortawesome/free-regular-svg-icons'
 
 library.add(faMagnifyingGlass, faTemperatureThreeQuarters, faWind, faDroplet, faSun)
-
-const weather = ref(null)
-const searchBar = ref('')
-const errorMsg = ref('')
 
 
 /*=============================================
@@ -32,22 +29,50 @@ const day3 = setDay3.toLocaleDateString('en-us', { weekday: 'long' })
 
 /*=============================================*/
 
-const search = async () => {
+const weather = ref(null)
+const searchBar = ref('')
+const errorMsg = ref('')
+const latlong = ref(null);
+
+onMounted(() => {
+  getLocation((latlongValue) => {
+    latlong.value = latlongValue;
+    renderWeatherByGeolocation(latlongValue);
+  });
+});
+
+// Fetch weather after prompt, by users geolocation
+const renderWeatherByGeolocation = async (latlongValue) => {
+  try {
+    const data = await fetchWeather(latlongValue)
+    weather.value = data
+  } catch (error) {
+    console.log('Failed to fetch weather data based on geolocation' + error.message);
+    // errorMsg.value = 'Failed to fetch weather data';
+  }
+  }
+
+// Fetch weather from city input by user
+const renderWeatherOnSearch = async () => {
+
+  // Error handling
   if (!isNaN(searchBar.value) || searchBar.value.trim() === '') {
-    errorMsg.value = 'Invalid location'
+    return errorMsg.value = 'Invalid location'
   } else {
     errorMsg.value = ''
-    try {
-      const data = await fetchWeather(searchBar.value)
-      weather.value = data
-    } catch (error) {
-      console.error(error)
-      errorMsg.value = 'Failed to fetch weather data'
-    }
-    searchBar.value = ''
   }
+
+  try {
+    const data = await fetchWeather(searchBar.value)
+    weather.value = data
+  } catch (error) {
+    console.log('Failed to fetch weather data based on chosen city' + error.message);
+    // errorMsg.value = 'Failed to fetch weather data'
+  }
+    searchBar.value = ''
 }
 </script>
+
 
 <template>
   <div id="wrapper">
@@ -55,7 +80,7 @@ const search = async () => {
       <font-awesome-icon icon="magnifying-glass" class="icon" />
       <input
         v-model="searchBar"
-        @keyup.enter="search"
+        @keyup.enter="renderWeatherOnSearch"
         autofocus
         type="text"
         placeholder="Enter location"
