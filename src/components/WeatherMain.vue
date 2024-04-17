@@ -99,7 +99,7 @@ const renderWeatherOnSearch = async () => {
 <template>
   
   <div v-if="loading">
-    Loading
+    <div class="loader"></div>
   </div>
 
   <main id="wrapper" v-else>
