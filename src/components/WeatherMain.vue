@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { fetchWeather } from '../services/weatherService.js'
 import { getLocation } from '../services/geolocationService.js'
-import LoadingIndicator from './LoadingIndicator.vue';
+// import LoadingIndicator from './LoadingIndicator.vue';
 
 // Icons
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -35,17 +35,18 @@ const searchBar = ref('')
 const latlong = ref(null);
 const isGeolocation = ref(false);
 
-const loading = ref(false);
+const loading = ref(true);
 
 onMounted(() => {
   getLocation(async (latlongValue) => {
     latlong.value = latlongValue;
-    console.log(loading.value)
-
+    
     if (latlongValue) {
       isGeolocation.value = true;
+      console.log(isGeolocation.value)
     } else {
       isGeolocation.value = false;
+      console.log(isGeolocation.value)
     }
     await renderWeatherByGeolocation(latlongValue);
   });
@@ -55,19 +56,18 @@ onMounted(() => {
 const renderWeatherByGeolocation = async (latlongValue) => {
 
   //Setting states
-  loading.value = true;
   isGeolocation.value = true;
 
   try {
     
     const data = await fetchWeather(latlongValue);
     weather.value = data;
+    loading.value = false;
 
   } catch (error) {
     console.log('Failed to fetch weather data based on geolocation' + error.message);
   }
-  loading.value = false;
-  console.log(loading.value)
+
 }
 
 // Fetch weather from city input by user
@@ -79,25 +79,30 @@ const renderWeatherOnSearch = async () => {
     return;
   }
 
-  //Setting states
-  loading.value = true;
-
   try {
     const data = await fetchWeather(searchBar.value)
+
+    // If the city was manually submitted, set isGeolocation to false
+    isGeolocation.value = false;
+
+    loading.value = false;
     weather.value = data
   } catch (error) {
     console.log('Failed to fetch weather data based on chosen city' + error.message);
   }
     searchBar.value = ''
-    loading.value = false;
 }
 
 </script>
 
 
 <template>
-  <LoadingIndicator v-if="loading.value" :loading="loading.value" />
-  <div id="wrapper">
+  
+  <div v-if="loading">
+    Loading
+  </div>
+
+  <main id="wrapper" v-else>
     <div id="search">
       <font-awesome-icon icon="magnifying-glass" class="icon" />
       <input
@@ -113,7 +118,10 @@ const renderWeatherOnSearch = async () => {
     <div v-if="weather">
 
       <div id="current-weather">
-        <div v-if="isGeolocation.value">hej</div>
+
+        <div v-if="isGeolocation === false"></div>
+        <div v-else>Hej</div>
+
         <h2 class="city-name">{{ weather.name }}</h2>
         <h1 class="degrees">{{ weather.temp_c }}°</h1>
         <h2 class="forecast">{{ weather.forecast }}</h2>
@@ -166,7 +174,8 @@ const renderWeatherOnSearch = async () => {
         </span>
       </div>
     </div>
-  </div>
+  </main>
+
   <footer>
     <p>Made with ♡ by <a href="https://emmamellgren.vercel.app">Emma Mellgren</a></p>
   </footer>

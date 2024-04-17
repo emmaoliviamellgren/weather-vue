@@ -10,7 +10,8 @@ defineProps({
 </script>
 
 <template>
-    <div v-if="loading">
+    <div v-if="loading.value">
 Loading..
     </div>
 </template>
+
