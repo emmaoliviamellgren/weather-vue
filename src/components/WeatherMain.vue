@@ -2,15 +2,14 @@
 import { ref, onMounted } from 'vue'
 import { fetchWeather } from '../services/weatherService.js'
 import { getLocation } from '../services/geolocationService.js'
-// import LoadingIndicator from './LoadingIndicator.vue';
 
 // Icons
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faMagnifyingGlass, faTemperatureThreeQuarters, faWind, faDroplet} from '@fortawesome/free-solid-svg-icons'
-import { faSun } from '@fortawesome/free-regular-svg-icons'
+import { faMagnifyingGlass, faTemperatureThreeQuarters, faWind, faDroplet, faLocationDot} from '@fortawesome/free-solid-svg-icons'
+import { faSun, faHeart } from '@fortawesome/free-regular-svg-icons'
 
-library.add(faMagnifyingGlass, faTemperatureThreeQuarters, faWind, faDroplet, faSun)
+library.add(faMagnifyingGlass, faTemperatureThreeQuarters, faWind, faDroplet, faLocationDot, faSun, faHeart)
 
 /*=============================================
 =            Managing date                    =
@@ -98,11 +97,9 @@ const renderWeatherOnSearch = async () => {
 
 <template>
   
-  <div v-if="loading">
-    <div class="loader"></div>
-  </div>
 
-  <main id="wrapper" v-else>
+
+  <main id="wrapper">
     <div id="search">
       <font-awesome-icon icon="magnifying-glass" class="icon" />
       <input
@@ -114,15 +111,20 @@ const renderWeatherOnSearch = async () => {
       />
     </div>
 
+    <div v-if="loading" id="loading-state">
+      <div class="loader"></div>
+    </div>
+    
     <!-- Weather information -->
-    <div v-if="weather">
+    <div v-else-if="weather">
 
       <div id="current-weather">
-
-        <div v-if="isGeolocation === false"></div>
-        <div v-else>Hej</div>
-
-        <h2 class="city-name">{{ weather.name }}</h2>
+        
+        <h2 class="city-name">
+          <span v-if="isGeolocation === false"></span>
+          <span v-else><font-awesome-icon icon="location-dot" class="location-icon"/></span>
+          {{ weather.name }}
+        </h2>
         <h1 class="degrees">{{ weather.temp_c }}°</h1>
         <h2 class="forecast">{{ weather.forecast }}</h2>
       </div>
@@ -158,7 +160,7 @@ const renderWeatherOnSearch = async () => {
           <font-awesome-icon icon="fa-regular fa-sun" :style="{ color: 'rgb(255, 238, 0)'}" />
           <p>UV Index</p>
         </span>
-          <span class="uv">{{ weather.uv }}<p v-if="weather.uv >= 3" class="uv-warning">High</p></span>
+          <span class="uv">{{ weather.uv }}<p v-if="weather.uv >= 3" class="uv-warning">High!</p></span>
       </div>
       </div>
     </div>
@@ -177,6 +179,8 @@ const renderWeatherOnSearch = async () => {
   </main>
 
   <footer>
-    <p>Made with ♡ by <a href="https://emmamellgren.vercel.app">Emma Mellgren</a></p>
+    <div class="style">
+      <a href="https://emmamellgren.vercel.app"><font-awesome-icon icon="fa-regular fa-heart" class="footer-icon"/></a>
+    </div>
   </footer>
 </template>

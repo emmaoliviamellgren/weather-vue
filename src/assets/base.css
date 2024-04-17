@@ -7,6 +7,10 @@
   --black: #181818;
   --black-soft: #222222;
   --black-mute: #282828;
+  --black-calm: #4a4a4ab2;
+
+  --blue-mute: rgb(30 41 59/0.9);
+  --blue-calm: rgba(39, 52, 73, 0.9);
 
   --vt-c-indigo: #2c3e50;
 
@@ -50,9 +54,6 @@
 body {
   min-height: 100vh;
   color: var(--white-soft);
-  background: var(--black-mute);
-  transition:
-    color 0.5s,
-    background-color 0.5s;
+  background: var(--white-calm);
   line-height: 1.6;
 }
