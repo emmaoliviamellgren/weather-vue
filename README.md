@@ -1,35 +1,30 @@
-# Weather-Of-The-Day
+#### Check out the project on Netlify:
+[https://weatheroftoday-project.netlify.app](https://weatheroftoday-project.netlify.app)
 
-This template should help get you started developing with Vue 3 in Vite.
+# Weather Of Today
 
-## Recommended IDE Setup
+This is a simple Vue-based application that provides current weather information based on your geolocation, as well as a 2-day forecast.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Features
 
-## Customize configuration
+**Geolocation:** Automatically detects your current location to provide accurate weather data.
+**Current Weather:** Displays the current weather conditions including temperature, humidity, wind speed, and weather description.
+**2-Day Forecast:** Shows a forecast for the next 2 days, giving you an idea of what weather to expect.
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+## Technologies Used
 
-## Project Setup
+**Vue.js:** Frontend development framework.
+**OpenWeatherMap API:** Used to fetch weather data based on geolocation.
+**User-Friendly Interface:** Intuitive and responsive design for a seamless user experience.
 
-```sh
-npm install
-```
+## Usage
 
-### Compile and Hot-Reload for Development
+To use the application, simply open the application in your web browser.
+Allow location access when prompted, or search for a location.
+View the current weather information for your location.
 
-```sh
-npm run dev
-```
+## Credits
 
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+Weather data provided by [WeatherAPI.com](https://weatherapi.com)
+Forecast images provided by [Unsplash](https://unsplash.com)
+Built with ❤️ by [Emma Mellgren](https://emmamellgren.vercel.app)
