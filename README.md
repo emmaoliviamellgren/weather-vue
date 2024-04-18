@@ -1,5 +1,5 @@
 #### Check out the project on Netlify:
-[https://weatheroftoday-project.netlify.app](https://weatheroftoday-project.netlify.app)
+[https://weatheroftoday.netlify.app](https://weatheroftoday.netlify.app)
 
 # Weather Of Today
 
